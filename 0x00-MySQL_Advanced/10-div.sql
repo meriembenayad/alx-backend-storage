@@ -3,9 +3,9 @@
 CREATE FUNCTION SafeDiv(a INT, b INT) RETURNS FLOAT
 BEGIN
     IF b == 0 THEN
-        RETURNS 0
+        RETURN 0
     ELSE
-        RETURNS a / b;
+        RETURN a / b;
     END IF;
 END; //
 DELIMITER;
