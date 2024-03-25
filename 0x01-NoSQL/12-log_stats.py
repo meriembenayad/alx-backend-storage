@@ -12,7 +12,7 @@ db = client['logs']
 col = db['nginx']
 
 # count documents in the collection
-num_docs = db.col.count_documents({})
+num_docs = col.count_documents({})
 print(f'{num_docs} logs')
 
 # List the methods
