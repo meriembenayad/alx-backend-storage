@@ -18,7 +18,7 @@ if __name__ == "__main__":
     # Print the counts for each method
     for method in methods:
         count = col.count_documents({'method': method})
-        print(f'\tMethod {method}: {count}')
+        print(f'\tmethod {method}: {count}')
     # Check the number ofdocuments with the method=GET and path=/status
     check_status = col.count_documents({'method': 'GET', 'path': '/status'})
     print(f'{check_status} status check')
