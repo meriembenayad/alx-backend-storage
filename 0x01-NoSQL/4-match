@@ -1,1 +1,2 @@
-#!/usr/bin/env bash
+// 4. All matches
+db.school.find({name:"Holberton school"})
