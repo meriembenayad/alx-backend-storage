@@ -25,16 +25,18 @@ if __name__ == "__main__":
 
     print('IPs:')
     ips_list = {}
-    # Loop through all ips
-    for document in col.find():
-        ip = document['ip']
-        if ip in ips_list:
-            ips_list[ip] += 1
-        else:
-            ips_list[ip] = 1
+    # Use MongoDB's aggregation framework to get the top 10 IPs
+    top_ips = col.aggregate([
+        {
+            '$group': {
+                '_id': '$ip',
+                'count': {'$sum': 1}
+            }
+        },
+        {'$sort': {'count': -1}},
+        {'$limit': 10}
+    ])
 
-    sorted_ips = sorted(
-        ips_list.items(), key=lambda item: item[1], reverse=True)
     # Prints the total:
-    for ip, count in sorted_ips[:10]:
-        print(f'{ip}: {count}')
+    for ip in top_ips:
+        print(f'{ip['_id']}: {count['count']}')
