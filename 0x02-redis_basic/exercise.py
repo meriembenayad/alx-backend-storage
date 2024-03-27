@@ -31,6 +31,8 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    """ 2. Incrementing values """
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Generate a random key (e.g. using uuid)
