@@ -10,7 +10,7 @@ class Cache:
 
     def __init__(self):
         """
-        Store an instance of the Redis client as a private variable named _redis
+        Store an instance of the Redis client as a private variable _redis
         """
         self._redis = redis.Redis()
         self._redis.flushdb()
