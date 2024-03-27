@@ -3,6 +3,22 @@
 import redis
 from uuid import uuid4
 from typing import Union, Optional, Callable
+from functools import wraps
+
+
+""" 2. Incrementing values """
+
+
+def count_calls(method: Callable) -> Callable:
+    """ Decorator """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """ wrapper """
+        key = method.__qualname__
+        self._redis.incr(key)
+        return method(self, args, *kwargs)
+    
+    return wrapper
 
 
 class Cache:
