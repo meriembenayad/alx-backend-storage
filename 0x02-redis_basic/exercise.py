@@ -10,13 +10,31 @@ from functools import wraps
 
 
 def count_calls(method: Callable) -> Callable:
-    """ Decorator """
+    """ Decorator Increments called """
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """ wrapper """
         key = method.__qualname__
         self._redis.incr(key)
         return method(self, *args, **kwargs)
+
+    return wrapper
+
+
+""" 3. Storing lists """
+
+def call_history(method: Callable) -> Callable:
+    """ Decorator """
+    inputKey = method.__qualname__ + ":inputs"
+    outputKey = method.__qualname__ + ":outputs"
+
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """ wrapper """
+        self._redis.rpush(inputKey, str(args))
+        result = method(self, *args, **kwargs)
+        self._redis.rpush(outputKey, str(result))
+        return result
 
     return wrapper
 
@@ -31,8 +49,8 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
-    """ 2. Incrementing values """
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Generate a random key (e.g. using uuid)
@@ -44,11 +62,8 @@ class Cache:
 
     """ 1. Reading from Redis and recovering original type """
 
-    def get(
-        self,
-        key: str,
-        fn: Optional[Callable] = None
-    ) -> Union[str, bytes, int, float]:
+    def get(self, key: str, fn: Optional[Callable] = None
+            ) -> Union[str, bytes, int, float]:
         """
         Get data from Redis using the key
         Convert the key using the Callable
