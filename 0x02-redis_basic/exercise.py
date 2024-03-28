@@ -23,6 +23,7 @@ def count_calls(method: Callable) -> Callable:
 
 """ 3. Storing lists """
 
+
 def call_history(method: Callable) -> Callable:
     """ Decorator """
     inputKey = method.__qualname__ + ":inputs"
@@ -37,6 +38,24 @@ def call_history(method: Callable) -> Callable:
         return result
 
     return wrapper
+
+
+""" 4. Retrieving lists """
+
+
+def replay(method: Callable) -> None:
+    """ Decorator """
+    method_name = method.__qualname__
+    input_key = f"{method_name}:inputs"
+    output_key = f"{method_name}:outputs"
+
+    inputs = method.__self__._redis.lrange(input_key, 0, -1)
+    outputs = method.__self__.redis.lrange(output_key, 0, -1)
+
+    print(f'{method_name} was called {len(inputs)} times:')
+
+    for inp, oup in zip(inputs, outputs):
+        print(f"{method_name}(*{inp.decode('utf-8')}) => {oup.decode('utf-8')}")
 
 
 class Cache:
