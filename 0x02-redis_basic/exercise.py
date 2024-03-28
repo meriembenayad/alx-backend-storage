@@ -55,7 +55,8 @@ def replay(method: Callable) -> None:
     print(f'{method_name} was called {len(inputs)} times:')
 
     for inp, oup in zip(inputs, outputs):
-        print(f"{method_name}(*{inp.decode('utf-8')}) => {oup.decode('utf-8')}")
+        print(f"{method_name}(*{inp.decode('utf-8')}) => \
+                {oup.decode('utf-8')}")
 
 
 class Cache:
